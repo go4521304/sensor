@@ -47,7 +47,7 @@ void input()
 		in >> p->Angle;
 		in >> x >> y;
 
-		if (p->Prev != NULL && abs((p->Distance)-(p->Prev->Distance)) >=800)
+		if (p->Prev != NULL && abs((p->Distance)-(p->Prev->Distance)) >=700)
 		{
 			count++;
 		}
@@ -94,7 +94,7 @@ void process()
 					count++;
 				else
 				{
-					if (count < 5)
+					if (count < 3)
 					{
 						Change = true;
 						p->blockLabel = p->Prev->blockLabel;
@@ -118,17 +118,14 @@ void output()
 
 	out.open("output.txt");
 
-	out << p->Angle << " " << p->blockLabel << endl;
-	cout << p->Angle << " " << p->blockLabel << endl;
-	p = p->Next;
-
 	while (p != NULL)
 	{
+		out << p->Angle << " " << p->Distance << endl;
+		p = p->Next;
+
 		if (p->blockLabel != p->Prev->blockLabel)
 		{
-			out << p->Angle << " " << p->blockLabel << endl;
-			cout << p->Angle << " " << p->blockLabel << endl;
+			out << endl << endl;
 		}
-		p = p->Next;
 	}
 }
