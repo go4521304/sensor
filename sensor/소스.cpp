@@ -21,7 +21,9 @@ void output();
 int main()
 {
 	input();
+
 	process();
+
 	output();
 }
 
@@ -37,18 +39,15 @@ void input()
 	int count = 0;
 
 	// dummy data
-	int x, y;
+	double x, y;
 
-	while (1)
+	while (!in.eof())
 	{
-		if (in.eof() == true)
-			break;
-
 		in >> p->Distance;
 		in >> p->Angle;
 		in >> x >> y;
 
-		if (p->Prev != NULL && abs((p->Distance)-(p->Prev->Distance)) >=500)
+		if (p->Prev != NULL && abs((p->Distance)-(p->Prev->Distance)) >=800)
 		{
 			count++;
 		}
@@ -58,6 +57,8 @@ void input()
 		p->Next->Prev = p;
 		p = p->Next;
 	}
+	p = p->Prev;
+	delete p->Next;
 	p = p->Prev;
 	delete p->Next;
 	p->Next = NULL;
@@ -70,9 +71,18 @@ void process()
 	bool Change = false;
 	int Label;
 
-	while (p == NULL)
+	while (p != NULL)
 	{
-		if (p->Prev != NULL && p->Prev->blockLabel != p->blockLabel)
+		if (Change)
+		{
+			if (p->blockLabel == Label)
+				p->blockLabel = p->Prev->blockLabel;
+
+			else
+				Change = false;
+		}
+
+		if (p->Prev != NULL && p->Prev->blockLabel != p->blockLabel && !Change)
 		{
 			list* tmp = p;
 			int count = 0;
@@ -84,16 +94,41 @@ void process()
 					count++;
 				else
 				{
-					if (count < 10)
+					if (count < 5)
 					{
 						Change = true;
-						Label = tmp->blockLabel;
+						p->blockLabel = p->Prev->blockLabel;
 					}
+
 					break;
 				}
 
 				tmp = tmp->Next;
 			}
 		}
+		p = p->Next;
+	}
+}
+
+void output()
+{
+	list* p = First;
+
+	ofstream out;
+
+	out.open("output.txt");
+
+	out << p->Angle << " " << p->blockLabel << endl;
+	cout << p->Angle << " " << p->blockLabel << endl;
+	p = p->Next;
+
+	while (p != NULL)
+	{
+		if (p->blockLabel != p->Prev->blockLabel)
+		{
+			out << p->Angle << " " << p->blockLabel << endl;
+			cout << p->Angle << " " << p->blockLabel << endl;
+		}
+		p = p->Next;
 	}
 }
